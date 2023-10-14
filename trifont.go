@@ -9,6 +9,7 @@ import (
 type Char struct {
 	Vertices [][2]float32
 	Indices  []uint16
+	Advance  float32
 }
 
 type Font struct {
@@ -81,6 +82,11 @@ func writeChar(w io.Writer, char Char) error {
 	if err != nil {
 		return err
 	}
+	// advance
+	err = binary.Write(w, binary.LittleEndian, char.Advance)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -140,7 +146,13 @@ func readChar(r io.Reader) (*Char, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Char{vertices, indices}, nil
+	// advance
+	var advance float32
+	err = binary.Read(r, binary.LittleEndian, &advance)
+	if err != nil {
+		return nil, err
+	}
+	return &Char{vertices, indices, advance}, nil
 }
 
 func readRunes(r io.Reader, amt uint16) ([]rune, error) {

@@ -11,5 +11,7 @@ The next bytes specify the utf32 values of the included characters.
 - The vertex positions as 2 float32s per vertex.  
 - 4 bytes specifying the amount of indices.  
 - The indices as a uint16 per index.
+- A float32 specifying how far to advance
 
+The Vertex positions should be between 0 and 1.  
 Little Endian should be used.  
