@@ -33,26 +33,31 @@ func (f *Font) ToBinary(w io.Writer) error {
 	return nil
 }
 
-// uses int because then i do not have to implemenet the sorter
-func (f *Font) getRunes() []int {
+// converts to int int because then i do not have to implemenet the sorter
+func (f *Font) getRunes() []rune {
 	// sort
-	runes := make([]int, 0, len(f.Chars))
+	ints := make([]int, 0, len(f.Chars))
 	for k := range f.Chars {
-		runes = append(runes, int(k))
+		ints = append(ints, int(k))
 	}
-	sort.Ints(runes)
+	sort.Ints(ints)
+	// convert back
+	runes := make([]rune, 0, len(f.Chars))
+	for i := range ints {
+		runes = append(runes, rune(i))
+	}
 	return runes
 }
 
-func (f *Font) getChars(runes []int) []Char {
+func (f *Font) getChars(runes []rune) []Char {
 	chars := make([]Char, len(runes))
 	for i, run := range runes {
-		chars[i] = f.Chars[rune(run)]
+		chars[i] = f.Chars[run]
 	}
 	return chars
 }
 
-func writeHeader(w io.Writer, runes []int) error {
+func writeHeader(w io.Writer, runes []rune) error {
 	err := binary.Write(w, binary.LittleEndian, uint16(len(runes)))
 	if err != nil {
 		return err
